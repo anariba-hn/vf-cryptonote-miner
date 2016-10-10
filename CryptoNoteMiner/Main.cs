@@ -13,7 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CryptoNoteMiner
+namespace VFCNMiner
 {
     public partial class Main : Form
     {
@@ -21,6 +21,8 @@ namespace CryptoNoteMiner
 
         string simplewalletPath;
         string cpuminerPath;
+        string claymoreminerPath;
+        string ccminerPath;
 
         string walletPath;
         string address;
@@ -44,14 +46,16 @@ namespace CryptoNoteMiner
             _syncContext = SynchronizationContext.Current;
 
             miningBtnStart = buttonStartMining.Text;
-            miningBtnStop = "Stop Mining";
+            miningBtnStop = "Stop CPU Mining";
 
             platform64bit = ArchitectureCheck.Is64Bit();
 
-            string platformString = platform64bit ? "64bit" : "32bit";
+            string platformString = platform64bit ? "64bit" : "32bit"; //if 64 bit
 
-            simplewalletPath = AppDomain.CurrentDomain.BaseDirectory + @"binaries\simplewallet\" + platformString + @"\simplewallet.exe";
+            simplewalletPath = AppDomain.CurrentDomain.BaseDirectory + @"binaries\simplewallet\" + platformString + @"\simplewallet.exe"; //paths
             cpuminerPath = AppDomain.CurrentDomain.BaseDirectory + @"binaries\cpuminer\" + platformString + @"\minerd.exe";
+            claymoreminerPath = AppDomain.CurrentDomain.BaseDirectory + @"binaries\claymoreminer\" + platformString + @"\NsGpuCNMiner.exe"; //AMD
+            ccminerPath = AppDomain.CurrentDomain.BaseDirectory + @"binaries\ccminer\" + platformString + @"\ccminer.exe"; //NVIDIA
 
             walletPath = AppDomain.CurrentDomain.BaseDirectory + @"wallet.address.txt";
 
@@ -64,6 +68,18 @@ namespace CryptoNoteMiner
             if (!File.Exists(cpuminerPath))
             {
                 MessageBox.Show("Missing " + cpuminerPath);
+                Process.GetCurrentProcess().Kill();
+            }
+
+            if (!File.Exists(claymoreminerPath))
+            {
+                MessageBox.Show("Missing " + claymoreminerPath);
+                Process.GetCurrentProcess().Kill();
+            }
+
+            if (!File.Exists(ccminerPath))
+            {
+                MessageBox.Show("Missing " + ccminerPath);
                 Process.GetCurrentProcess().Kill();
             }
 
@@ -174,7 +190,7 @@ namespace CryptoNoteMiner
             process.StartInfo = startInfo;
             process.EnableRaisingEvents = true;
             process.Exited += (s, e) => {
-                Log("Miner died");
+                Log("CPU Miner died");
                 minerProcesses.Remove(process);
                 if (minerProcesses.Count == 0)
                 {
@@ -193,7 +209,7 @@ namespace CryptoNoteMiner
             SetParent(process.MainWindowHandle, panel1.Handle);
             MoveWindow(process.MainWindowHandle, 0, 0, panel1.Width, panel1.Height - 20, true);
 
-            Log("Miner started on " + cores + " cores");
+            Log("CPU Miner started on " + cores + " cores");
         }
 
 
@@ -242,8 +258,6 @@ namespace CryptoNoteMiner
                 killMiners();
             }
         }
-
-
 
     }
 }

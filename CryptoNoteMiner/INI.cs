@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CryptoNoteMiner
+namespace VFCNMiner
 {
     public static class INI
     {
