@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoNoteMiner", "CryptoNoteMiner\CryptoNoteMiner.csproj", "{8047E257-DE3D-4C2A-8498-6FD586D7053D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VFCNMiner", "CryptoNoteMiner\VFCNMiner.csproj", "{8047E257-DE3D-4C2A-8498-6FD586D7053D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
