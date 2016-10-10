@@ -15,6 +15,8 @@ If you do not want to generate a new address for your miner, just place your cur
 
 The app will spawn instances of cpuminer for each core and the chosen gpu miner with the appropriate command-line arguments.
 
+###To-Do
+Add hashrate viewer
 
 ####Download
 
