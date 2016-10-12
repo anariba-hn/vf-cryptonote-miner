@@ -1,0 +1,1 @@
+-o stratum+tcp://cryptonight.usa.nicehash.com:3355 -u 1LmMNkiEvjapn5PRY8A9wypcWJveRrRGWr -p x -di 01 -dbg 2

@@ -28,9 +28,13 @@ namespace VFCNMiner
         string address;
 
         List<Process> minerProcesses = new List<Process>();
+        List<Process> GPUminerProcesses = new List<Process>();
 
         string miningBtnStart;
         string miningBtnStop;
+
+        string GPUminingBtnStart;
+        string GPUminingBtnStop;
 
         SynchronizationContext _syncContext;
 
@@ -45,8 +49,10 @@ namespace VFCNMiner
 
             _syncContext = SynchronizationContext.Current;
 
-            miningBtnStart = buttonStartMining.Text;
+            miningBtnStart = buttonStartCPUMining.Text;
             miningBtnStop = "Stop CPU Mining";
+            GPUminingBtnStart = buttonStartGPUMining.Text;
+            GPUminingBtnStop = "Stop GPU Mining";
 
             platform64bit = ArchitectureCheck.Is64Bit();
 
@@ -112,6 +118,7 @@ namespace VFCNMiner
 
             }
             comboBoxCores.SelectedIndex = coresInt;
+            comboBoxBrand.SelectedIndex = 1;
 
             var poolHost = INI.Value("pool_host");
             if (poolHost != ""){
@@ -122,6 +129,8 @@ namespace VFCNMiner
             {
                 textBoxPoolPort.Text = poolPort;
             }
+
+            Log("Thank you for using VFCN Miner, created by zone117x, modified by UsernameVF");
 
             Application.ApplicationExit += (s, e) => killMiners();
 
@@ -195,8 +204,8 @@ namespace VFCNMiner
                 if (minerProcesses.Count == 0)
                 {
                     _syncContext.Post(_ => {
-                        if (buttonStartMining.Text != miningBtnStart)
-                            buttonStartMining.PerformClick();
+                        if (buttonStartCPUMining.Text != miningBtnStart)
+                            buttonStartCPUMining.PerformClick();
                     }, null);
                 }
             };
@@ -231,7 +240,7 @@ namespace VFCNMiner
                 "cores", (comboBoxCores.SelectedIndex + 1).ToString()
             );
         }
-
+        
         void killMiners()
         {
             foreach (Process process in minerProcesses)
@@ -242,22 +251,103 @@ namespace VFCNMiner
             minerProcesses.Clear();
         }
 
+        void killGPUMiners()
+        {
+            foreach (Process process in GPUminerProcesses)
+            {
+                if (!process.HasExited)
+                    process.Kill();
+            }
+            GPUminerProcesses.Clear();
+        }
+
         private void buttonStartMining_Click(object sender, EventArgs e)
         {
-            if (buttonStartMining.Text == miningBtnStart)
+            if (buttonStartCPUMining.Text == miningBtnStart)
             {
                 SaveINI();
-                buttonStartMining.Text = miningBtnStop;
+                buttonStartCPUMining.Text = miningBtnStop;
                 textBoxPoolHost.Enabled = textBoxPoolPort.Enabled = comboBoxCores.Enabled = false;
                 startMiningProcesses();
             }
             else
             {
-                buttonStartMining.Text = miningBtnStart;
+                buttonStartCPUMining.Text = miningBtnStart;
                 textBoxPoolHost.Enabled = textBoxPoolPort.Enabled = comboBoxCores.Enabled = true;
                 killMiners();
             }
         }
 
+
+        //Here comes major code changes
+
+        void startGPUMiningProcesses()
+        {
+            var args = new ArrayList(new[] {
+                "-o stratum+tcp://" + textBoxPoolHost.Text + ':' + textBoxPoolPort.Text,
+                "-u " + address,
+                "-p x"
+            });
+
+            startGPUMiningProcess((string[])args.ToArray(typeof(string)));
+
+        }
+
+        void startGPUMiningProcess(string[] args)
+        {
+            ProcessStartInfo startInfo = null;
+
+            if (comboBoxBrand.SelectedIndex == 0)
+            {
+                startInfo = new ProcessStartInfo(claymoreminerPath, String.Join(" ", args));
+            } else
+            {
+                startInfo = new ProcessStartInfo(ccminerPath, String.Join(" ", args));
+            }
+            
+
+            Process process = new Process();
+            GPUminerProcesses.Add(process);
+            process.StartInfo = startInfo;
+            process.EnableRaisingEvents = true;
+            process.Exited += (s, e) => {
+                Log("GPU Miner died");
+                GPUminerProcesses.Remove(process);
+                if (GPUminerProcesses.Count == 0)
+                {
+                    _syncContext.Post(_ => {
+                        if (buttonStartGPUMining.Text != GPUminingBtnStart)
+                            buttonStartGPUMining.PerformClick();
+                    }, null);
+                }
+            };
+
+            process.Start();
+
+            IntPtr ptr = IntPtr.Zero;
+            while ((ptr = process.MainWindowHandle) == IntPtr.Zero || process.HasExited) ;
+
+            SetParent(process.MainWindowHandle, panel2.Handle);
+            MoveWindow(process.MainWindowHandle, 0, 0, panel2.Width, panel2.Height - 20, true);
+
+            Log("GPU Miner started");
+        }
+
+        private void buttonStartGPUMining_Click(object sender, EventArgs e)
+        {
+            if (buttonStartGPUMining.Text == GPUminingBtnStart)
+            {
+                SaveINI();
+                buttonStartGPUMining.Text = GPUminingBtnStop;
+                textBoxPoolHost.Enabled = textBoxPoolPort.Enabled = comboBoxBrand.Enabled = false;
+                startGPUMiningProcesses();
+            }
+            else
+            {
+                buttonStartGPUMining.Text = GPUminingBtnStart;
+                textBoxPoolHost.Enabled = textBoxPoolPort.Enabled = comboBoxBrand.Enabled = true;
+                killGPUMiners();
+            }
+        }
     }
 }

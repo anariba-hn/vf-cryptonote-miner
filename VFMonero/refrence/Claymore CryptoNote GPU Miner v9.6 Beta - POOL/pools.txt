@@ -1,0 +1,2 @@
+stratum+tcp://mine.moneropool.com:3333
+stratum+tcp://monero.crypto-pool.fr:3333
