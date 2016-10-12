@@ -21,3 +21,7 @@ Add hashrate viewer
 ####Download
 
 Get the latest build here: [releases](//github.com/UsernameVF/vf-cryptonote-miner/releases)
+
+
+
+43hz7w1GHdxcPab7BwE2pGezmhXPFaqLxZBcmVgvWzvMN4EhkbifYHE5fhsUHqAZDLMEdgbDmsNTXfVxEUwzzuBNASmt9FW
