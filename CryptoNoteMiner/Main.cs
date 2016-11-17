@@ -174,6 +174,10 @@ namespace VFCNMiner
 
         void startMiningProcesses()
         {
+    // Remove any leading or ending spaces - typical occurs when using copy and paste and will result in the mining process failing to start.
+            textBoxPoolHost.Text = textBoxPoolHost.Text.Trim();
+            textBoxPoolPort.Text = textBoxPoolPort.Text.Trim();
+            
             var args = new ArrayList(new[] { 
                 "-a cryptonight",
                 "-o stratum+tcp://" + textBoxPoolHost.Text + ':' + textBoxPoolPort.Text,
@@ -283,6 +287,10 @@ namespace VFCNMiner
 
         void startGPUMiningProcesses()
         {
+        // Remove any leading or ending spaces - typical occurs when using copy and paste and will result in the mining process failing to start.
+            textBoxPoolHost.Text = textBoxPoolHost.Text.Trim();
+            textBoxPoolPort.Text = textBoxPoolPort.Text.Trim();
+            
             var args = new ArrayList(new[] {
                 "-o stratum+tcp://" + textBoxPoolHost.Text + ':' + textBoxPoolPort.Text,
                 "-u " + address,
