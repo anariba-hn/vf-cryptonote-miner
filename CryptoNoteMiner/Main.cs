@@ -183,6 +183,7 @@ namespace VFCNMiner
                 "-o stratum+tcp://" + textBoxPoolHost.Text + ':' + textBoxPoolPort.Text,
                 "-u " + address,
                 "-p x"
+                
             });
             var cores = comboBoxCores.SelectedIndex + 1;
             if (cores != comboBoxCores.Items.Count)
@@ -295,6 +296,15 @@ namespace VFCNMiner
                 "-o stratum+tcp://" + textBoxPoolHost.Text + ':' + textBoxPoolPort.Text,
                 "-u " + address,
                 "-p x"
+                
+            var args1 = new ArrayList(new[] {
+                "-o stratum+tcp://" + textBoxPoolHost.Text + ':' + textBoxPoolPort.Text,
+                "-u " + address,
+                "-p x"
+                "-a 4"
+                "-allpools 1"
+                "-r 0"
+           
             });
 
             startGPUMiningProcess((string[])args.ToArray(typeof(string)));
@@ -307,7 +317,7 @@ namespace VFCNMiner
 
             if (comboBoxBrand.SelectedIndex == 0)
             {
-                startInfo = new ProcessStartInfo(claymoreminerPath, String.Join(" ", args));
+                startInfo = new ProcessStartInfo(claymoreminerPath, String.Join(" ", args1));
             } else
             {
                 startInfo = new ProcessStartInfo(ccminerPath, String.Join(" ", args));
