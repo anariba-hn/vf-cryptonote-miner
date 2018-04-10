@@ -16,7 +16,14 @@ namespace VFCNMiner
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
+            FRMINICIOSUPERIORCOIN sp = new FRMINICIOSUPERIORCOIN();
+            if (sp.ShowDialog()== DialogResult.OK )
+            {
+                Application.Run(new Main());
+            }
+
+            
+
         }
     }
 }
